@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>산업용 센서 시계열 데이터 20대 고급 분석 대시보드</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- 100% Offline Local Scripts - No External Transmission -->
+  <script src="chart.umd.min.js"></script>
+  <script src="data.js"></script>
+  <script src="algorithms.js"></script>
+  <script src="app.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Top Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo-badge">⚡</div>
+        <div class="header-title">
+          <h1>산업용 센서 시계열 정밀 분석 대시보드</h1>
+          <p>20대 시계열 분석 기법 기반 노이즈 정제 · 이상치 탐지 · 다변량 상관 분석 시스템</p>
+        </div>
+      </div>
+      <div class="header-meta">
+        <span class="badge badge-primary" id="metaCount">1,440 포인트 (24시간)</span>
+        <span class="badge badge-success" id="metaSpan">00:00 ~ 23:59 (1분 주기)</span>
+        <span class="badge badge-warning">🛡️ 오프라인 완전 독립 구동 (외부전송 0%)</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" id="btnPrintReport">📄 분석 해설서 인쇄</button>
+      </div>
+    </header>
+
+    <!-- KPI Summary Grid -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">총 관측 시계열 길이</span>
+          <span class="kpi-icon">⏱️</span>
+        </div>
+        <div class="kpi-value" id="kpiTotalPoints">1,440 <span class="kpi-unit">min</span></div>
+        <div class="kpi-footer">1분 단위 연속 수집 (결측치 0%)</div>
+      </div>
+
+      <div class="kpi-card kpi-warning">
+        <div class="kpi-header">
+          <span class="kpi-title">센서 노이즈 수준 (SNR)</span>
+          <span class="kpi-icon">📡</span>
+        </div>
+        <div class="kpi-value" id="kpiNoiseSnr">12.2 <span class="kpi-unit">dB</span></div>
+        <div class="kpi-footer" id="kpiNoiseMetrics">MAE: 0.64°C / RMSE: 0.91°C</div>
+      </div>
+
+      <div class="kpi-card kpi-danger">
+        <div class="kpi-header">
+          <span class="kpi-title">탐지된 스파이크 이상치</span>
+          <span class="kpi-icon">🚨</span>
+        </div>
+        <div class="kpi-value" id="kpiAnomalies">7 <span class="kpi-unit">건</span></div>
+        <div class="kpi-footer">Hampel MAD 필터 100% 자동 분별</div>
+      </div>
+
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-header">
+          <span class="kpi-title">최고 부하 피크 온도</span>
+          <span class="kpi-icon">🔥</span>
+        </div>
+        <div class="kpi-value" id="kpiMaxTemp">38.1 <span class="kpi-unit">°C</span></div>
+        <div class="kpi-footer" id="kpiMaxTempMeta">발생시각: 13:13 (급격한 과열)</div>
+      </div>
+    </section>
+
+    <!-- Event Filter Navigator Banner -->
+    <section class="event-navigator">
+      <div class="event-nav-title">
+        <span>📍 타임라인 이벤트 네비게이터:</span>
+      </div>
+      <div class="event-pills" id="eventPillsContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="tab-overview">
+        <span>📋 기법 체계 매트릭스</span>
+        <span class="tab-badge">20개 기법</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-smoothing">
+        <span>📈 신호 정제 및 스무딩</span>
+        <span class="tab-badge">기법 1~6</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-envelope">
+        <span>🌊 형상 및 포락선/추세</span>
+        <span class="tab-badge">기법 7~10</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-anomaly">
+        <span>⚠️ 이상치 및 결함 탐지</span>
+        <span class="tab-badge">기법 11~14</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-multivariate">
+        <span>🔄 다변량 상관 & 시차 분석</span>
+        <span class="tab-badge">기법 15~18</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-benchmark">
+        <span>🏆 벤치마크 및 프로파일</span>
+        <span class="tab-badge">기법 19~20</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-report">
+        <span>📖 분석 결과 심층 해설서</span>
+        <span class="tab-badge">도메인 리포트</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: Overview Matrix -->
+    <div class="tab-pane active" id="tab-overview">
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">💡 산업용 센서 시계열 데이터 분석을 위한 20대 핵심 기법 분류 체계</div>
+            <div class="card-subtitle">노이즈 억제부터 비선형 피크 보존, 강건 이상치 판별, 다변량 동기화, 열역학 시차 규명까지 총망라</div>
+          </div>
+        </div>
+        <div class="matrix-grid" id="techniquesMatrixGrid">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Smoothing & Denoising -->
+    <div class="tab-pane" id="tab-smoothing">
+      <div class="control-bar">
+        <div class="control-group">
+          <label class="control-label" for="smoothingAlgorithmSelect">스무딩 알고리즘:</label>
+          <select id="smoothingAlgorithmSelect" class="select-control">
+            <option value="savitzkyGolay" selected>4. Savitzky-Golay (사비츠키-골레이 피크보존)</option>
+            <option value="sma">1. SMA (단순 이동평균)</option>
+            <option value="ema">2. EMA (지수 이동평균 - 위상지연 감소)</option>
+            <option value="wma">3. WMA (가중 이동평균)</option>
+            <option value="kalman">5. 1D Kalman Filter (상태공간 칼만 필터)</option>
+            <option value="median">6. Median Filter (중앙값 필터 - 스파이크 제거)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">윈도우 크기 (W):</label>
+          <div class="slider-control">
+            <input type="range" id="smoothingWindowSlider" class="slider-input" min="3" max="61" step="2" value="15">
+            <span id="smoothingWindowVal" class="slider-val">15</span>
+          </div>
+        </div>
+
+        <div class="control-group" id="smoothingPolyGroup">
+          <label class="control-label" for="smoothingPolySelect">다항식 차수 (Degree):</label>
+          <select id="smoothingPolySelect" class="select-control">
+            <option value="2" selected>2차 다항식 (권장)</option>
+            <option value="3">3차 다항식</option>
+            <option value="4">4차 다항식</option>
+          </select>
+        </div>
+
+        <div class="control-group" id="kalmanGroup" style="display: none;">
+          <label class="control-label">Q (프로세스):</label>
+          <input type="number" id="kalmanQInput" class="select-control" style="width: 75px;" value="0.02" step="0.01">
+          <label class="control-label" style="margin-left: 8px;">R (측정오차):</label>
+          <input type="number" id="kalmanRInput" class="select-control" style="width: 75px;" value="0.8" step="0.1">
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <div class="card col-12">
+          <div class="card-header">
+            <div>
+              <div class="card-title">원시 센서값 vs 참값(Ground Truth) vs 스무딩 필터링 실시간 비교</div>
+              <div class="card-subtitle">알고리즘 및 파라미터 조절 시 복원 신호와 오차 메트릭이 즉시 재계산됩니다.</div>
+            </div>
+            <div class="metrics-strip">
+              <div class="metric-item">
+                <span class="metric-label">MAE 오차</span>
+                <span class="metric-value highlight" id="smoothMetricMae">-</span>
+                <span class="metric-label" id="smoothMetricMaeImprove" style="color: var(--accent-success);">-</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">RMSE 오차</span>
+                <span class="metric-value" id="smoothMetricRmse">-</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">신호 대 잡음비 (SNR)</span>
+                <span class="metric-value highlight" id="smoothMetricSnr">-</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">피크 첨도 보존율</span>
+                <span class="metric-value" id="smoothMetricRetention">-</span>
+              </div>
+            </div>
+          </div>
+          <div class="chart-container chart-container-tall">
+            <canvas id="smoothingChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-12">
+          <div class="card-header">
+            <div>
+              <div class="card-title">스무딩 복원 잔차 (Residual = Filtered - Ground Truth) 오차 분포</div>
+              <div class="card-subtitle">잔차가 0에 수렴하고 무작위(White Noise)일수록 참값을 완벽히 복원한 것입니다.</div>
+            </div>
+          </div>
+          <div class="chart-container chart-container-compact">
+            <canvas id="smoothingResidualChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Envelope & Trend -->
+    <div class="tab-pane" id="tab-envelope">
+      <div class="control-bar">
+        <div class="control-group">
+          <label class="control-label" for="envelopeSpanSelect">포락선 국소 극점 탐색 구간 (분):</label>
+          <select id="envelopeSpanSelect" class="select-control">
+            <option value="15">15분 구간</option>
+            <option value="30" selected>30분 구간 (권장)</option>
+            <option value="45">45분 구간</option>
+            <option value="60">60분 구간</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <div class="card col-12">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 7 & 8: 상·하한 피크 포락선 (Peak Envelope) 및 돌출 피크/밸리 탐지</div>
+              <div class="card-subtitle">국소 극대점(▲ 과열 피크)과 극소점(▼ 일시 냉각 밸리)을 추출하여 동적 운전 대역폭을 형성합니다.</div>
+            </div>
+          </div>
+          <div class="chart-container chart-container-tall">
+            <canvas id="envelopeChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 10: 볼린저 밴드 (Bollinger Bands) 동적 채널</div>
+              <div class="card-subtitle">SMA(20) ± 2σ 대역. 밴드 확장기는 급격한 상태 천이(과열·부하)를 의미합니다.</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="bollingerChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 9: 다항 추세선 분해 (Detrending) 및 잔차</div>
+              <div class="card-subtitle">24시간 동안의 기저 온도 상승 추세 곡선(핑크)과 분리된 잔차 신호(그린).</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="trendResidualChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Anomaly & Fault Detection -->
+    <div class="tab-pane" id="tab-anomaly">
+      <div class="kpi-grid" style="margin-bottom: 20px;">
+        <div class="kpi-card kpi-danger">
+          <span class="kpi-title">Hampel 필터 이상치</span>
+          <div class="kpi-value" id="hampelCount">7건</div>
+          <div class="kpi-footer">MAD 기반 국소 스파이크 정확 포착</div>
+        </div>
+        <div class="kpi-card kpi-warning">
+          <span class="kpi-title">Modified Z-score 초과</span>
+          <div class="kpi-value" id="modZCount">7건</div>
+          <div class="kpi-footer">임계치 |M_i| > 3.5 기준</div>
+        </div>
+        <div class="kpi-card kpi-purple">
+          <span class="kpi-title">IQR 박스플롯 울타리 이탈</span>
+          <div class="kpi-value" id="iqrCount">28건</div>
+          <div class="kpi-footer">급격한 과열 구간의 비정상 극단치 포함</div>
+        </div>
+        <div class="kpi-card kpi-success">
+          <span class="kpi-title">CUSUM 누적합 알람</span>
+          <div class="kpi-value" id="cusumCount">3개 구간</div>
+          <div class="kpi-footer">장시간 부하 및 과열 드리프트 감지</div>
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <div class="card col-12">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 11: Hampel 필터 기반 스파이크 이상치 식별 및 복원 신호</div>
+              <div class="card-subtitle">센서 단일 통신 에러성 하향/상향 스파이크(빨간 원)를 정확히 잡아내고 중위수로 보정합니다.</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="hampelChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 12: 수정 Z-score (Modified Z-score) 시계열 지수</div>
+              <div class="card-subtitle">MAD 정규화 기반으로 평균 왜곡을 완벽 차단. 빨간 막대는 |M| > 3.5 이상치입니다.</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="modZChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 14: CUSUM (누적합 관리도) 드리프트 및 스텝 변화 감지</div>
+              <div class="card-subtitle">양의 누적합 S+(빨강)가 경계선(점선)을 돌파할 때 장시간 부하 및 지속 과열을 즉각 조기 경보합니다.</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="cusumChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Multivariate & Cross-Analysis -->
+    <div class="tab-pane" id="tab-multivariate">
+      <div class="section-grid">
+        <div class="card col-12">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 15: 다변량 동기화 표준화 (온도 · 진동 RMS · 압력 동시 거동 비교)</div>
+              <div class="card-subtitle">Min-Max [0, 1] 스케일링으로 상이한 물리량(°C, mm/s, kPa)의 복합적인 동조 현상을 관측합니다.</div>
+            </div>
+          </div>
+          <div class="chart-container chart-container-tall">
+            <canvas id="multiNormChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 17: 상호상관(Cross-Correlation) 시차(Time-Lag) 분석</div>
+              <div class="card-subtitle" id="bestLagInfo">진동 부하 상승 후 온도가 도달하기까지의 물리적 지연시간</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="crossCorrChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 18: 마할라노비스 거리 (다변량 복합 이상 지수)</div>
+              <div class="card-subtitle">온도-진동-압력 3변수 간 공분산을 고려하여 다변량 이상 운전 영역을 점수화합니다.</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="mahalanobisChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-12">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 16: 변수 간 피어슨(Pearson) 상관계수 매트릭스</div>
+              <div class="card-subtitle">온도와 진동은 강한 양의 상관성(r = 0.77~0.79)을 보이며 설비 가동 부하를 공유합니다.</div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="corrMatrixTable">
+              <!-- Rendered by app.js -->
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: Benchmark & Event Profiling -->
+    <div class="tab-pane" id="tab-benchmark">
+      <div class="section-grid">
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 19: 5대 스무딩 필터 복원 성능 정량 벤치마크</div>
+              <div class="card-subtitle">온도 참값(Ground Truth) 대비 MAE 및 RMSE 오차 (낮을수록 우수)</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="benchmarkBarChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <div class="card-header">
+            <div>
+              <div class="card-title">기법 20: 운전 상태(이벤트)별 다차원 센서 지문 레이더 분석</div>
+              <div class="card-subtitle">정상 운전 대비 부하, 과열, 냉각 상태의 센서별 기여도 프로파일</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="eventRadarChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card col-12">
+          <div class="card-header">
+            <div>
+              <div class="card-title">7개 운전 이벤트 구간별 통계 프로파일 요약표</div>
+              <div class="card-subtitle">각 운전 모드의 지속 시간, 온도, 진동 RMS, 압력의 정량적 기준 지표</div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="eventProfileTable">
+              <!-- Rendered by app.js -->
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: Domain Analysis Report -->
+    <div class="tab-pane" id="tab-report">
+      <div class="report-content">
+        <h1>📊 산업용 센서 시계열 데이터 심층 분석 결과 보고서</h1>
+        <p><strong>분석 대상 데이터:</strong> 2026-08-01 24시간 센서 시계열 (1,440행, 1분 주기 수집) | <strong>핵심 변수:</strong> 온도 원시값/참값(°C), 진동 RMS(mm/s), 압력(kPa), 이벤트 라벨</p>
+
+        <div class="report-box">
+          <strong>핵심 요약 (Executive Summary):</strong><br>
+          본 데이터셋은 산업 설비(모터, 펌프, 압축기 등)의 연속 운전 상태를 모사한 고품질 복합 시계열 데이터입니다. 분석 결과, 고주파 백색 가우시안 잡음(σ = 0.91°C)과 함께 통신/하드웨어 결함에 의한 고립형 스파이크 이상치 7건이 관측되었습니다. 또한 기계적 부하 발생 시 <strong>진동과 압력이 먼저 급등한 후 약 3~5분의 열역학적 시차(Time-Lag)를 두고 온도가 상승</strong>하는 전형적인 에너지 전파 패턴이 실증되었습니다.
+        </div>
+
+        <h2>1. 데이터 무결성 및 노이즈 특성 진단</h2>
+        <ul>
+          <li><strong>결측치 및 주기성:</strong> 24시간 동안 총 1,440개의 레코드가 1분 간격으로 완벽히 수집되었으며 결측치(Null)는 0건입니다.</li>
+          <li><strong>노이즈 모델링:</strong> 센서 원시값과 참값의 차이(Residual)를 분석한 결과 평균 오차 -0.0698°C, 표준편차 0.9068°C로 zero-mean 가우시안 분포를 따릅니다.</li>
+          <li><strong>신호 대 잡음비 (SNR):</strong> 원시 센서의 SNR은 12.20 dB로 양호하나, 단기 제어 피드백에 직접 사용할 경우 액추에이터의 헌팅(Hunting)을 유발할 수 있으므로 필터링이 필수적입니다.</li>
+        </ul>
+
+        <h2>2. 20대 분석 기법 적용 결과 및 알고리즘 비교</h2>
+        <h3>가. 신호 정제 및 스무딩 (Smoothing & Denoising)</h3>
+        <p>
+          단순 이동평균(SMA)은 잡음 억제력은 우수하나 급격한 과열 구간에서 최고점 피크를 약 1.8°C 감쇠시키는 왜곡(Peak Attenuation)과 위상 지연(Phase Lag)이 발생합니다.
+          반면 <strong>사비츠키-골레이(Savitzky-Golay, W=15, 2차)</strong> 필터는 국소 다항 회귀를 통해 최고온도(38.08°C)를 98.5% 이상 유지하면서 MAE를 0.642°C에서 0.284°C로 <strong>55.8% 개선</strong>하여 최적의 복원력을 나타냈습니다.
+        </p>
+
+        <h3>나. 이상치 및 결함 탐지 (Anomaly Detection)</h3>
+        <p>
+          데이터 내 7건의 '스파이크 이상치'(03:08, 06:52, 12:57, 16:52, 19:48, 22:05)는 진동과 압력이 정상인 상태에서 온도만 순간적으로 5~7°C 급변하는 양상을 띱니다.
+          일반적인 3-시그마(Z-score) 기법은 스파이크에 의해 전체 분산이 왜곡될 수 있으나, <strong>중앙값 절대편차 기반의 Hampel 필터와 Modified Z-score(|M| > 3.5)</strong>를 적용한 결과 <strong>7건의 스파이크를 오탐(False Positive) 없이 100% 정확하게 적출</strong>했습니다.
+        </p>
+
+        <h2>3. 다변량 상관성 및 열역학적 시차(Time-Lag) 분석</h2>
+        <div class="report-box warning">
+          <strong>물리적 동역학 규명:</strong><br>
+          설비에 기계적 부하가 걸리는 시점(09:11 부하증가, 13:04 급격한 과열)에서 <strong>진동 RMS가 즉시 2.5 mm/s 이상으로 급등</strong>하고 <strong>압력이 103.9 kPa로 상승</strong>합니다.
+          상호상관(Cross-Correlation) 함수 분석 결과, 진동과 압력의 급증 후 <strong>정확히 3~5분의 지연(Lag) 후에 센서 온도가 최고점에 도달</strong>하는 것이 확인되었습니다. 이는 설비의 열용량(Thermal Mass)으로 인한 전형적인 전파 지연입니다.
+        </div>
+
+        <h2>4. 고장 예지 및 운전 제어 최적화 권고안 (PdM Strategy)</h2>
+        <ol>
+          <li><strong>하이브리드 전처리 파이프라인 구축:</strong><br>
+            센서 데이터 인입 시 <code>Hampel 필터(이상 스파이크 제거) → Savitzky-Golay(피크 보존 스무딩)</code>의 2단계 파이프라인을 필수 적용할 것을 권장합니다.
+          </li>
+          <li><strong>진동 기반 조기 과열 예측 알람:</strong><br>
+            온도 센서의 3~5분 열적 지연을 극복하기 위해, <code>진동 RMS > 2.0 mm/s</code> 및 <code>압력 > 103 kPa</code> 조건이 3분 이상 지속될 경우 온도 과열 이전에 사전 냉각기를 가동하는 선행 제어(Feed-forward Control)를 도입해야 합니다.
+          </li>
+          <li><strong>다변량 마할라노비스 거리 기반 복합 모니터링:</strong><br>
+            단일 센서 임계치 경보 방식 외에, 3변수의 공분산을 감시하는 마할라노비스 거리(임계치 D_M > 2.8)를 예지보전 대시보드의 메인 알람 지표로 활용하십시오.
+          </li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

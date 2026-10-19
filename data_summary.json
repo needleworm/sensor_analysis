@@ -1,0 +1,282 @@
+{
+  "event_stats": {
+    "급격한 과열": {
+      "count": 13,
+      "minute_min": 784,
+      "minute_max": 796,
+      "time_ranges": [
+        {
+          "start_min": 784,
+          "end_min": 796,
+          "duration_min": 13,
+          "start_time": "2026-08-01 13:04:00",
+          "end_time": "2026-08-01 13:16:00"
+        }
+      ],
+      "temp_raw_mean": 36.025,
+      "temp_raw_std": 1.418,
+      "temp_true_mean": 35.986,
+      "vib_mean": 2.56,
+      "press_mean": 103.895
+    },
+    "단기 과열": {
+      "count": 17,
+      "minute_min": 302,
+      "minute_max": 318,
+      "time_ranges": [
+        {
+          "start_min": 302,
+          "end_min": 318,
+          "duration_min": 17,
+          "start_time": "2026-08-01 05:02:00",
+          "end_time": "2026-08-01 05:18:00"
+        }
+      ],
+      "temp_raw_mean": 25.874,
+      "temp_raw_std": 1.001,
+      "temp_true_mean": 26.253,
+      "vib_mean": 1.62,
+      "press_mean": 101.085
+    },
+    "부하 증가": {
+      "count": 29,
+      "minute_min": 551,
+      "minute_max": 579,
+      "time_ranges": [
+        {
+          "start_min": 551,
+          "end_min": 579,
+          "duration_min": 29,
+          "start_time": "2026-08-01 09:11:00",
+          "end_time": "2026-08-01 09:39:00"
+        }
+      ],
+      "temp_raw_mean": 31.567,
+      "temp_raw_std": 1.025,
+      "temp_true_mean": 31.774,
+      "vib_mean": 2.333,
+      "press_mean": 102.43
+    },
+    "스파이크 이상치": {
+      "count": 7,
+      "minute_min": 188,
+      "minute_max": 1325,
+      "time_ranges": [
+        {
+          "start_min": 188,
+          "end_min": 188,
+          "duration_min": 1,
+          "start_time": "2026-08-01 03:08:00",
+          "end_time": "2026-08-01 03:08:00"
+        },
+        {
+          "start_min": 412,
+          "end_min": 413,
+          "duration_min": 2,
+          "start_time": "2026-08-01 06:52:00",
+          "end_time": "2026-08-01 06:53:00"
+        },
+        {
+          "start_min": 777,
+          "end_min": 777,
+          "duration_min": 1,
+          "start_time": "2026-08-01 12:57:00",
+          "end_time": "2026-08-01 12:57:00"
+        },
+        {
+          "start_min": 1012,
+          "end_min": 1012,
+          "duration_min": 1,
+          "start_time": "2026-08-01 16:52:00",
+          "end_time": "2026-08-01 16:52:00"
+        },
+        {
+          "start_min": 1188,
+          "end_min": 1188,
+          "duration_min": 1,
+          "start_time": "2026-08-01 19:48:00",
+          "end_time": "2026-08-01 19:48:00"
+        },
+        {
+          "start_min": 1325,
+          "end_min": 1325,
+          "duration_min": 1,
+          "start_time": "2026-08-01 22:05:00",
+          "end_time": "2026-08-01 22:05:00"
+        }
+      ],
+      "temp_raw_mean": 19.168,
+      "temp_raw_std": 5.76,
+      "temp_true_mean": 24.364,
+      "vib_mean": 1.471,
+      "press_mean": 101.391
+    },
+    "일시 냉각": {
+      "count": 21,
+      "minute_min": 1250,
+      "minute_max": 1270,
+      "time_ranges": [
+        {
+          "start_min": 1250,
+          "end_min": 1270,
+          "duration_min": 21,
+          "start_time": "2026-08-01 20:50:00",
+          "end_time": "2026-08-01 21:10:00"
+        }
+      ],
+      "temp_raw_mean": 19.243,
+      "temp_raw_std": 1.024,
+      "temp_true_mean": 18.998,
+      "vib_mean": 1.059,
+      "press_mean": 100.32
+    },
+    "장시간 부하": {
+      "count": 40,
+      "minute_min": 1010,
+      "minute_max": 1050,
+      "time_ranges": [
+        {
+          "start_min": 1010,
+          "end_min": 1011,
+          "duration_min": 2,
+          "start_time": "2026-08-01 16:50:00",
+          "end_time": "2026-08-01 16:51:00"
+        },
+        {
+          "start_min": 1013,
+          "end_min": 1050,
+          "duration_min": 38,
+          "start_time": "2026-08-01 16:53:00",
+          "end_time": "2026-08-01 17:30:00"
+        }
+      ],
+      "temp_raw_mean": 29.136,
+      "temp_raw_std": 0.96,
+      "temp_true_mean": 29.34,
+      "vib_mean": 2.242,
+      "press_mean": 102.581
+    },
+    "정상": {
+      "count": 1313,
+      "minute_min": 0,
+      "minute_max": 1439,
+      "time_ranges": [
+        {
+          "start_min": 0,
+          "end_min": 187,
+          "duration_min": 188,
+          "start_time": "2026-08-01 00:00:00",
+          "end_time": "2026-08-01 03:07:00"
+        },
+        {
+          "start_min": 189,
+          "end_min": 301,
+          "duration_min": 113,
+          "start_time": "2026-08-01 03:09:00",
+          "end_time": "2026-08-01 05:01:00"
+        },
+        {
+          "start_min": 319,
+          "end_min": 411,
+          "duration_min": 93,
+          "start_time": "2026-08-01 05:19:00",
+          "end_time": "2026-08-01 06:51:00"
+        },
+        {
+          "start_min": 414,
+          "end_min": 550,
+          "duration_min": 137,
+          "start_time": "2026-08-01 06:54:00",
+          "end_time": "2026-08-01 09:10:00"
+        },
+        {
+          "start_min": 580,
+          "end_min": 776,
+          "duration_min": 197,
+          "start_time": "2026-08-01 09:40:00",
+          "end_time": "2026-08-01 12:56:00"
+        },
+        {
+          "start_min": 778,
+          "end_min": 783,
+          "duration_min": 6,
+          "start_time": "2026-08-01 12:58:00",
+          "end_time": "2026-08-01 13:03:00"
+        },
+        {
+          "start_min": 797,
+          "end_min": 1009,
+          "duration_min": 213,
+          "start_time": "2026-08-01 13:17:00",
+          "end_time": "2026-08-01 16:49:00"
+        },
+        {
+          "start_min": 1051,
+          "end_min": 1187,
+          "duration_min": 137,
+          "start_time": "2026-08-01 17:31:00",
+          "end_time": "2026-08-01 19:47:00"
+        },
+        {
+          "start_min": 1189,
+          "end_min": 1249,
+          "duration_min": 61,
+          "start_time": "2026-08-01 19:49:00",
+          "end_time": "2026-08-01 20:49:00"
+        },
+        {
+          "start_min": 1271,
+          "end_min": 1324,
+          "duration_min": 54,
+          "start_time": "2026-08-01 21:11:00",
+          "end_time": "2026-08-01 22:04:00"
+        },
+        {
+          "start_min": 1326,
+          "end_min": 1439,
+          "duration_min": 114,
+          "start_time": "2026-08-01 22:06:00",
+          "end_time": "2026-08-01 23:59:00"
+        }
+      ],
+      "temp_raw_mean": 23.832,
+      "temp_raw_std": 3.339,
+      "temp_true_mean": 23.87,
+      "vib_mean": 1.455,
+      "press_mean": 101.729
+    }
+  },
+  "correlation": {
+    "temp_raw": {
+      "temp_raw": 1.0,
+      "temp_true": 0.9704309861774183,
+      "vibration_rms": 0.7657142615661692,
+      "pressure": 0.5629329372869424
+    },
+    "temp_true": {
+      "temp_raw": 0.9704309861774183,
+      "temp_true": 1.0,
+      "vibration_rms": 0.7856302872677666,
+      "pressure": 0.576878114966127
+    },
+    "vibration_rms": {
+      "temp_raw": 0.7657142615661692,
+      "temp_true": 0.7856302872677666,
+      "vibration_rms": 1.0,
+      "pressure": 0.38686548185332637
+    },
+    "pressure": {
+      "temp_raw": 0.5629329372869424,
+      "temp_true": 0.576878114966127,
+      "vibration_rms": 0.38686548185332637,
+      "pressure": 1.0
+    }
+  },
+  "noise_metrics": {
+    "mean": -0.0698,
+    "std": 0.9068,
+    "mae": 0.642,
+    "rmse": 0.9091,
+    "snr_db": 12.2
+  }
+}
